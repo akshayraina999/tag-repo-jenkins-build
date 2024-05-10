@@ -1,0 +1,10 @@
+registry=http://13.232.171.79:8081/repository/new-repo/
+_auth=YWRtaW46c2hhZHlwYXJr
+email=imanishchaudhary@gmail.com
+always-auth=true
+
+allowRepublish=true
+
+ /*"publishConfig": {
+    "registry": "http://13.232.171.79:8081/repository/new-repo/"
+  },*/

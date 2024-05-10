@@ -1,0 +1,102 @@
+def stagingBranch = 'jenkins_poc'
+
+pipeline {
+    agent any
+    
+    tools {nodejs "node14"}
+
+    stages {
+        stage('Staging Env') {
+            when { branch "${stagingBranch}"}            
+            steps {
+                script {
+                    env.WEBSERVER = "stg-app-webserver"
+                    env.ENV = "staging"
+                }
+            }    
+        }
+        stage('AUS Env') {
+            when { tag "*-aus" }
+            steps {
+                script {
+                    env.WEBSERVER = "aus-app-webserver"
+                    env.ENV = "production-aus"
+                }
+            }
+        }
+        stage('US Env') {
+            when { tag "*-us" }
+            steps {
+                script {
+                    env.WEBSERVER = "us-app-webserver"
+                    env.ENV = "production-us"
+                }
+            }
+        }
+        stage('EU Env') {
+            when { tag "*-eu" }
+            steps {
+                script {
+                    env.WEBSERVER = "eu-app-webserver"
+                    env.ENV = "production-eu"
+                }
+            }
+        }
+        stage('Install deps') {
+            steps {
+                notifyBuild('STARTED')
+                sh '''
+                    echo "Installing..."
+                    npm install -g @angular/cli
+                    npm install
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+                sh '''
+                    echo "Building..."
+                    ng build --configuration=$ENV saas-converse-desk --base-href "/desk" --deploy-url "/desk/" --prod
+                '''
+            }
+        }
+        stage('Deploy') {
+            environment {
+                sshKey = credentials('jenkins-stg')
+            }
+            steps {
+                script {
+                    if (env.ENV != 'staging') {
+                        emailext (
+                            mimeType: "text/html",
+                            subject: "${env.JOB_NAME} (${env.ENV}) - Please approve #${env.BUILD_NUMBER}",
+                            body: "Build #${env.BUILD_NUMBER} is ready to be deployed to <b>${env.ENV}</b>.\nTo Approve or Abort the deployment to $ENV, click on the link ${env.BUILD_URL}input or for more info please click here ${env.BUILD_URL}",
+                            to: 'codeculture@screen-magic.com, saas@screen-magic.com'
+                        ) 
+                        input "Ready to deploy for $ENV Server?"
+                    }
+                    sh '''
+                        echo "Deploying to $ENV..."
+                        scp -o StrictHostKeyChecking=no -i $sshKey -r dist/apps/saas-converse-desk/* $WEBSERVER:/home/usher/web/saas-converse-desk
+                    '''
+                }
+            }
+        }
+
+    }
+    post {
+        always {
+            notifyBuild(currentBuild.currentResult)
+            deleteDir()
+        }
+    }
+}
+
+def notifyBuild(String buildStatus) {
+    emailext (
+        mimeType: "text/html",
+        subject: "${env.JOB_NAME} (${env.ENV}): ${buildStatus}",
+        body: "Job ${env.JOB_NAME} build# ${env.BUILD_NUMBER} Build status: ${buildStatus}\n More info at: ${env.BUILD_URL}",
+        to: 'codeculture@screen-magic.com, saas@screen-magic.com'
+    )
+}
