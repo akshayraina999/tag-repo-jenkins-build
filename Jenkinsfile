@@ -1,9 +1,9 @@
 pipeline {
   agent any
 
-  environment {
-        TAG_NAME = "${env.GIT_TAG_NAME}"
-    }
+  // environment {
+  //       TAG_NAME = "${env.GIT_TAG_NAME}"
+  //   }
 
   triggers {
         githubPush()
@@ -15,7 +15,7 @@ pipeline {
 
               echo "branch name ${env.GIT_TAG_NAME}"
                 checkout([$class: 'GitSCM', 
-                          branches: [[name: "*/tags/${TAG_NAME}"]], 
+                          branches: [[name: "*/tags/${env.GIT_TAG_NAME}"]], 
                           userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']]])
             }
         }
@@ -33,7 +33,7 @@ pipeline {
           echo "new release 3"
         } 
       }
-    }
+  }
 }
 
 
