@@ -3,14 +3,14 @@ pipeline {
 
   stages {
     stage ("Deploy 1") {
-      when { tag "dev-*" }
+      /*when { tag "dev-*" }*/
       steps {
         echo "hello world 3"
       }
     }
 
     stage ("Deploy 2") {
-      when { tag "release-*" }
+      /*when { tag "release-*" }*/
       steps {
         echo "new release 2"
       }
