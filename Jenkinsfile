@@ -12,6 +12,8 @@ pipeline {
   stages {
     stage('Checkout') {
             steps {
+
+              echo "branch name ${env.GIT_TAG_NAME}"
                 checkout([$class: 'GitSCM', 
                           branches: [[name: "*/tags/${TAG_NAME}"]], 
                           userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']]])
