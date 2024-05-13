@@ -13,12 +13,12 @@ pipeline {
     stage('Checkout') {
             steps {
 
-              echo "branch name ${env.GIT_TAG_NAME}"
+              echo "${env.GIT_TAG_NAME}"
                 // checkout([$class: 'GitSCM', 
                 //           branches: [[name: "*/tags/${env.GIT_TAG_NAME}"]], 
                 //           userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']]])
 
-                checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']], branches: [[name: "refs/tags/${env.GIT_TAG_NAME}"]]], poll: false
+                // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']], branches: [[name: "refs/tags/${env.GIT_TAG_NAME}"]]], poll: false
             }
         }
     stage ("Deploy 1") {
