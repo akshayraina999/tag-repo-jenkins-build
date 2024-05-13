@@ -5,7 +5,7 @@ pipeline {
     stage ("Deploy 1") {
       when { tag "dev-*" }
       steps {
-        echo "hello world 2"
+        echo "hello world 3"
       }
     }
 
