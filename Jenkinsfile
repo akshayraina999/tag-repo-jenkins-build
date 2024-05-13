@@ -11,7 +11,7 @@ pipeline {
     stage ("Deploy 2") {
       when { tag "release-*" }
       steps {
-        echo "new release 1"
+        echo "new release 2"
       }
     }
  }
