@@ -10,7 +10,7 @@ pipeline {
       when { tag "dev-*" }
       steps {
 	script {
-          echo "hello world 6"
+          echo "hello world 8"
 	}
       }
     }
@@ -19,7 +19,7 @@ pipeline {
     stage ("Deploy 2") {
       when { tag "release-*" }
       steps {
-        echo "new release 2"
+        echo "new release 3"
       }
     }
  }
