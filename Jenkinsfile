@@ -10,17 +10,27 @@ pipeline {
   }
 
   stages {
+    
     stage('Checkout') {
             steps {
-
-              echo "${env.GIT_TAG_NAME}"
-                // checkout([$class: 'GitSCM', 
-                //           branches: [[name: "*/tags/${env.GIT_TAG_NAME}"]], 
-                //           userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']]])
-
-                // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']], branches: [[name: "refs/tags/${env.GIT_TAG_NAME}"]]], poll: false
+                script {
+                    def tagPattern = ~/^refs\/tags\/(.*)$/ // Define a regex pattern to match tag names
+                    def tagName = env.BRANCH_NAME =~ tagPattern ? tagPattern.matcher(env.BRANCH_NAME).replaceAll('$1') : null // Extract the tag name
+                    echo "Tag name: ${tagName}"
+                }
             }
         }
+    // stage('Checkout') {
+    //         steps {
+
+    //           echo "${env.GIT_TAG_NAME}"
+    //             // checkout([$class: 'GitSCM', 
+    //             //           branches: [[name: "*/tags/${env.GIT_TAG_NAME}"]], 
+    //             //           userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']]])
+
+    //             // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']], branches: [[name: "refs/tags/${env.GIT_TAG_NAME}"]]], poll: false
+    //         }
+    //     }
     stage ("Deploy 1") {
       when { tag "dev-*" }
         steps {
