@@ -14,9 +14,8 @@ pipeline {
     stage('Checkout') {
             steps {
                 script {
-                    def tagPattern = ~/^refs\/tags\/(.*)$/ // Define a regex pattern to match tag names
-                    def tagName = env.BRANCH_NAME =~ tagPattern ? tagPattern.matcher(env.BRANCH_NAME).replaceAll('$1') : null // Extract the tag name
-                    echo "Tag name: ${tagName}"
+                    def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+                    echo "Tag name: ${tag}"
                 }
             }
         }
