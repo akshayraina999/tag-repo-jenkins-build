@@ -30,14 +30,16 @@ pipeline {
     //             // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']], branches: [[name: "refs/tags/${env.GIT_TAG_NAME}"]]], poll: false
     //         }
     //     }
-    stage ("Deploy 1") {
-      when { tag "dev-*" }
-        steps {
-	         script {
-            sh "docker build -t test:${env.GIT_TAG_NAME} ."
-	         }
+    stage("Deploy 1") {
+            when { tag "dev-*" }
+            steps {
+                script {
+                    def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+                    sh "docker build -t test:${tag} ."
+                }
+            }
         }
-    }
+        
     stage ("Deploy 2") {
       when { tag "release-*" }
         steps {
