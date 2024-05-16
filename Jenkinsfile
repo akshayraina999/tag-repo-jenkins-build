@@ -1,5 +1,3 @@
-def config = readYaml file: 'config.yaml'
-
 pipeline {
   agent any
 
