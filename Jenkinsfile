@@ -7,10 +7,10 @@ pipeline {
   //       TAG_NAME = "${env.GIT_TAG_NAME}"
   //   }
 
-  parameters {
-        string(name: 'GIT_REPO_URL', description: 'URL of the Git repository', defaultValue: config.GIT_REPO_URL)
-        string(name: 'DOCKER_IMAGE_NAME', description: 'Name of the Docker image to build', defaultValue: config.DOCKER_IMAGE_NAME)
-    }
+  // parameters {
+  //       string(name: 'GIT_REPO_URL', description: 'URL of the Git repository', defaultValue: config.GIT_REPO_URL)
+  //       string(name: 'DOCKER_IMAGE_NAME', description: 'Name of the Docker image to build', defaultValue: config.DOCKER_IMAGE_NAME)
+  //   }
 
 
   triggers {
@@ -19,6 +19,16 @@ pipeline {
 
 
   stages {
+
+    stage('Read Config') {
+            steps {
+                script {
+                    def config = readYaml file: 'config.yaml'
+                    env.GIT_REPO_URL = config.GIT_REPO_URL
+                    env.DOCKER_IMAGE_NAME = config.DOCKER_IMAGE_NAME
+                }
+            }
+        }
     
     stage('Checkout') {
             steps {
