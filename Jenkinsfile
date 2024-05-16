@@ -17,6 +17,8 @@ pipeline {
                 script {
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
                     echo "Tag name: ${tag}"
+
+                    checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/akshayraina999/tag-repo-jenkins-build.git']], branches: [[name: "refs/tags/${tag}"]]], poll: false
                 }
             }
         }
