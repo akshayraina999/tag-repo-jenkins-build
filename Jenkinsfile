@@ -28,12 +28,13 @@ pipeline {
             }
         }
     
-    stage('Checkout') {
+    stage('Pull the code') {
             steps {
                 script {
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
                     echo "Tag name: ${tag}"
-                    checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: "${params.GIT_REPO_URL}"]], branches: [[name: "refs/tags/${tag}"]]], poll: false
+                    // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: "${params.GIT_REPO_URL}"]], branches: [[name: "refs/tags/${tag}"]]], poll: false
+                    git branch: "${tag}", url: env.GIT_REPO_URL
                 }
             }
         }
