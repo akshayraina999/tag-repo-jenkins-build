@@ -1,0 +1,2 @@
+GIT_REPO_URL: "https://github.com/akshayraina999/tag-repo-jenkins-build.git"
+DOCKER_IMAGE_NAME: "tag-image"
