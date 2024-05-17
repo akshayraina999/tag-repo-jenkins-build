@@ -24,6 +24,7 @@ pipeline {
                     echo "*************** Reading config *******************"
                     def config = readYaml file: 'config.yaml'
                     env.GIT_REPO_URL = config.GIT_REPO_URL
+                    echo "${env.GIT_REPO_URL}"
                     env.DOCKER_IMAGE_NAME = config.DOCKER_IMAGE_NAME
                 }
             }
