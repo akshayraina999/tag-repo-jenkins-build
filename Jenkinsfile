@@ -70,13 +70,13 @@ pipeline {
 
     stage("Build and Deploy") {
       when { tag "dev-*" }
-
-        script {
-                    // Get the tag again, in case it was not passed from previous stage
-                    def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
-                    // Build the Docker image
-                    def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
-                }
+        steps {
+          script {
+                      // Get the tag again, in case it was not passed from previous stage
+                      def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+                      // Build the Docker image
+                      def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
+                  }
             // steps {
             //     script {
             //         def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
@@ -84,6 +84,7 @@ pipeline {
             //         // Additional deployment steps can be added here
             //     }
             // }
+          }
         }
 
     // stage("Deploy 1") {
