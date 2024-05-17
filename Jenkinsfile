@@ -48,12 +48,17 @@ pipeline {
                     checkout([$class: 'GitSCM', userRemoteConfigs: [[url: env.GIT_REPO_URL]], branches: [[name: '*/main']]])
 
                     // Get the latest tag
-                    def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
-                    echo "Tag name: ${tag}"
+                    // def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+                    // echo "Tag name: ${tag}"
 
                     // Checkout the code at the tag
                     sh "git fetch --tags"
-                    sh "git checkout ${tag}"
+                    // sh "git checkout ${tag}"
+                    def latestTag = sh(returnStdout: true, script: 'git describe --tags `git rev-list --tags --max-count=1`').trim()
+                    echo "Latest tag: ${latestTag}"
+
+                    // Checkout the code at the latest tag
+                    sh "git checkout ${latestTag}"
                 }
             }
         }
@@ -75,7 +80,8 @@ pipeline {
         steps {
           script {
                     // Get the tag again, in case it was not passed from the previous stage
-                    def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+                    // def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+                    def latestTag = sh(returnStdout: true, script: 'git describe --tags `git rev-list --tags --max-count=1`').trim()
                     // Build the Docker image
                     // def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
                     sh "docker build -t ${env.DOCKER_IMAGE_NAME}:${tag} ."
