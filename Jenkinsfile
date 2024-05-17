@@ -29,17 +29,33 @@ pipeline {
             }
         }
     
-    stage('Pull the code') {
+    // stage('Pull the code') {
+    //         steps {
+    //             script {
+    //                 echo "*************** Pulling the code *******************"
+    //                 def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+    //                 echo "Tag name: ${tag}"
+    //                 // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: "${params.GIT_REPO_URL}"]], branches: [[name: "refs/tags/${tag}"]]], poll: false
+    //                 git branch: "${tag}", url: env.GIT_REPO_URL
+    //             }
+    //         }
+    //     }
+    stage('Pull Code') {
             steps {
                 script {
-                    echo "*************** Pulling the code *******************"
+                    // Pull code from the Git repository
+                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: env.GIT_REPO_URL]]])
+
+                    // Get the latest tag
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
                     echo "Tag name: ${tag}"
-                    // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: "${params.GIT_REPO_URL}"]], branches: [[name: "refs/tags/${tag}"]]], poll: false
-                    git branch: "${tag}", url: env.GIT_REPO_URL
+
+                    // Checkout the code at the tag
+                    sh "git checkout ${tag}"
                 }
             }
         }
+
     // stage('Checkout') {
     //         steps {
 
@@ -54,13 +70,20 @@ pipeline {
 
     stage("Build and Deploy") {
       when { tag "dev-*" }
-            steps {
-                script {
+
+        script {
+                    // Get the tag again, in case it was not passed from previous stage
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
-                    sh "docker build -t ${params.DOCKER_IMAGE_NAME}:${tag} ."
-                    // Additional deployment steps can be added here
+                    // Build the Docker image
+                    def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
                 }
-            }
+            // steps {
+            //     script {
+            //         def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
+            //         sh "docker build -t ${params.DOCKER_IMAGE_NAME}:${tag} ."
+            //         // Additional deployment steps can be added here
+            //     }
+            // }
         }
 
     // stage("Deploy 1") {
