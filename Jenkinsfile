@@ -77,7 +77,8 @@ pipeline {
                     // Get the tag again, in case it was not passed from the previous stage
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
                     // Build the Docker image
-                    def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
+                    // def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
+                    sh "docker build -t ${env.DOCKER_IMAGE_NAME}:${tag} ."
                 }
             // steps {
             //     script {
