@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     // Pull the code from the Git repository
-                    checkout([$class: 'GitSCM', userRemoteConfigs: [[url: env.GIT_REPO_URL]], branches: [[name: '*/master']]])
+                    checkout([$class: 'GitSCM', userRemoteConfigs: [[url: env.GIT_REPO_URL]], branches: [[name: '*/main']]])
 
                     // Get the latest tag
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
