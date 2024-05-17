@@ -84,7 +84,7 @@ pipeline {
                     def latestTag = sh(returnStdout: true, script: 'git describe --tags `git rev-list --tags --max-count=1`').trim()
                     // Build the Docker image
                     // def dockerImage = docker.build("${env.DOCKER_IMAGE_NAME}:${tag}", ".")
-                    sh "docker build -t ${env.DOCKER_IMAGE_NAME}:${tag} ."
+                    sh "docker build -t ${env.DOCKER_IMAGE_NAME}:${latestTag} ."
                 }
             // steps {
             //     script {
