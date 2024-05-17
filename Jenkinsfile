@@ -21,6 +21,7 @@ pipeline {
     stage('Read Config') {
             steps {
                 script {
+                    echo "*************** Reading config *******************"
                     def config = readYaml file: 'config.yaml'
                     env.GIT_REPO_URL = config.GIT_REPO_URL
                     env.DOCKER_IMAGE_NAME = config.DOCKER_IMAGE_NAME
@@ -31,6 +32,7 @@ pipeline {
     stage('Pull the code') {
             steps {
                 script {
+                    echo "*************** Pulling the code *******************"
                     def tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
                     echo "Tag name: ${tag}"
                     // checkout scm: [$class: 'GitSCM', userRemoteConfigs: [[url: "${params.GIT_REPO_URL}"]], branches: [[name: "refs/tags/${tag}"]]], poll: false
